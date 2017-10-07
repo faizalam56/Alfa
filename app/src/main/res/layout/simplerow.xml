@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_marginTop="@dimen/vertical_margin_small"
+    android:layout_marginBottom="@dimen/vertical_margin_small"
+    >
+
+    <TextView android:id="@+id/rowTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="Demo Text"
+        android:textColor="@color/colorBlack"
+        style="@style/Base.TextAppearance.AppCompat.Medium"
+         >
+    </TextView>
+
+    <CheckBox android:id="@+id/CheckBox01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="0sp"
+        android:button="@drawable/custom_checkbox"
+        android:layout_gravity="right|center_vertical"
+        android:focusable="false">
+    </CheckBox>
+
+</FrameLayout>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="0dp"
+    tools:context="com.senzec.alfa.activity.EditProfileActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+        <include
+            layout="@layout/app_bar_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Please fill your detail in this form"
+        android:textColor="@color/colorBlack"
+        android:padding="10dp"
+        android:layout_marginBottom="@dimen/vertical_margin_small"
+        android:textSize="18sp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#DDDDDD"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        >
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="10"
+        android:padding="10dp">
+
+        // #Academic Information
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="@dimen/vertical_margin_small">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Academic Information"
+                    android:textColor="@color/colorBlack"
+                    android:layout_gravity="top|left"
+                    android:textAllCaps="true"
+                    style="@style/Base.TextAppearance.AppCompat.Medium"
+                    />
+                <Button
+                    android:id="@+id/idAddAcademic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20sp"
+                    android:text="+Add"
+                    android:textSize="18sp"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_gravity="top|right"
+                    android:textColor="@color/colorYellow"
+                    android:background="@color/transparent"/>
+            </FrameLayout>
+            <ListView
+                android:id="@+id/idAcademic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                ></ListView>
+            //
+
+        </LinearLayout>
+        // #Job Information
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/vertical_margin_small"
+                android:layout_marginTop="@dimen/vertical_margin">
+
+                <TextView
+                    style="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|left"
+                    android:text="Job Information"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorBlack" />
+
+                <Button
+                    android:id="@+id/idAddJob"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20sp"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_gravity="top|right"
+                    android:text="+Add"
+                    android:textSize="18sp"
+                    android:textColor="@color/colorYellow"
+                    android:background="@color/transparent"/>
+            </FrameLayout>
+            <ListView
+                android:id="@+id/idJobInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></ListView>
+        </LinearLayout>
+        // #Button
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            card_view:cardUseCompatPadding="true"
+            android:layout_marginTop="@dimen/vertical_margin_small">
+            <Button
+                android:id="@+id/btn_profile_continue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorYellow"
+                android:text="CONTINUE"
+                android:textColor="@color/colorBlack"
+                android:textAllCaps="true"
+                android:padding="10dp"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </android.support.v7.widget.CardView>
+
+
+    </LinearLayout>
+    </ScrollView>
+</LinearLayout>

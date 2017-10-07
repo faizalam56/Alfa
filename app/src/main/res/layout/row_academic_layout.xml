@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        card_view:cardUseCompatPadding="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            // #DEGREE
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                card_view:cardUseCompatPadding="true">
+
+                <EditText
+                    android:id="@+id/idDegreeET"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/White"
+                    android:hint="B.com(H)"
+                    android:padding="10dp"
+                    android:singleLine="true"
+                    android:text="a" />
+
+            </android.support.v7.widget.CardView>
+            // #College/SCHOOL
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                card_view:cardUseCompatPadding="true">
+
+                <EditText
+                    android:id="@+id/idInstituteName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/White"
+                    android:hint="School/College Name"
+                    android:padding="10dp"
+                    android:singleLine="true"
+                    android:text="b"></EditText>
+            </android.support.v7.widget.CardView>
+            // #YEAR
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+                <android.support.v7.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    card_view:cardUseCompatPadding="true"
+                    android:layout_weight="1">
+
+                    <EditText
+                        android:id="@+id/idJoinYearAcademicET"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/horizontal_margin_small"
+                        android:background="@color/White"
+                        android:hint="Joining Year"
+                        android:inputType="date"
+                        android:padding="@dimen/horizontal_margin_small"
+                        android:singleLine="true"
+                        android:text="1"></EditText>
+                </android.support.v7.widget.CardView>
+                <android.support.v7.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    card_view:cardUseCompatPadding="true"
+                    android:layout_weight="1">
+
+                    <EditText
+                        android:id="@+id/idFinalYearAcademicET"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/horizontal_margin_small"
+                        android:background="@color/White"
+                        android:hint="Final Year"
+                        android:inputType="date"
+                        android:padding="@dimen/horizontal_margin_small"
+                        android:singleLine="true"
+                        android:text="2"></EditText>
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>
