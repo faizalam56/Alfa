@@ -213,6 +213,26 @@
                             android:textAppearance="?android:attr/textAppearanceMedium" />
 
                     </android.support.v7.widget.CardView>
+                    <android.support.v7.widget.CardView
+                        android:layout_marginTop="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        card_view:cardUseCompatPadding="true">
+
+                       <com.senzec.alfa.multiselectspinner.MultiSpinnerSearch
+                           android:id="@+id/spnr_groupName"
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:entries="@array/groupname"
+                           android:background="@color/White"
+                           android:textAppearance="?android:attr/textAppearanceMedium"
+                           android:padding="10dp"
+                           app:hintText="Select group">
+
+                       </com.senzec.alfa.multiselectspinner.MultiSpinnerSearch>
+
+                    </android.support.v7.widget.CardView>
+
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>

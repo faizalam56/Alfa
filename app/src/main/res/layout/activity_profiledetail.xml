@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="10">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4.2"
+        >
+
+        <ImageView
+            android:id="@+id/idProfileImage"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/img_my_profile" />
+        <ImageView
+            android:id="@+id/idBackIV"
+            android:layout_width="48dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_back"
+            android:layout_marginTop="@dimen/vertical_margin_small"
+            android:layout_marginLeft="@dimen/vertical_margin_small"
+            />
+        <ImageView
+            android:id="@+id/idEditProfileIV"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_edit"
+            android:layout_marginTop="@dimen/vertical_margin_small"
+            android:layout_marginRight="@dimen/vertical_margin_small"
+            android:layout_gravity="top|right"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5.8">
+
+        <LinearLayout
+            android:padding="10dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                card_view:cardUseCompatPadding="true"
+                >
+
+                <Button
+                    android:id="@+id/btn_enquires"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:background="@color/White"
+                    android:gravity="left"
+                    android:padding="10dp"
+                    android:text="Chat History"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_info"
+                    android:layout_gravity="left|center_vertical"/>
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="right|center_vertical"
+                    android:src="@drawable/ic_right_arrow"
+                    />
+
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                card_view:cardUseCompatPadding="true"
+                >
+
+                <Button
+                    android:id="@+id/idCompanyBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:background="@color/White"
+                    android:gravity="left"
+                    android:padding="10dp"
+                    android:text="Companies"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_company"
+                    android:layout_gravity="left|center_vertical"/>
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="right|center_vertical"
+                    android:src="@drawable/ic_right_arrow"
+                    />
+
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                card_view:cardUseCompatPadding="true"
+                >
+
+                <Button
+                    android:id="@+id/idInviteMemberBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:background="@color/White"
+                    android:gravity="left"
+                    android:padding="10dp"
+                    android:text="Invite Members"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_invite_member"
+                    android:layout_gravity="left|center_vertical"/>
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="right|center_vertical"
+                    android:src="@drawable/ic_right_arrow"
+                    />
+
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </FrameLayout>
+</LinearLayout>

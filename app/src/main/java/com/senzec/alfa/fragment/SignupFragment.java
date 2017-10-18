@@ -134,7 +134,8 @@ public class SignupFragment extends Fragment implements View.OnClickListener {
 
                 if(response.isSuccessful() && response.code() == 200){
                     Toast.makeText(view.getContext(), "Signup Success", Toast.LENGTH_LONG).show();
-                    new SharedPrefClass(view.getContext()).setLogininfo(response.body().getToken());
+               //     new SharedPrefClass(view.getContext()).setLogininfo(response.body().getToken());
+                    new SharedPrefClass(view.getContext()).setLogininfo(response.body().getResult().getId());
                     startActivity(new Intent(view.getContext(), EditProfileActivity.class));
                 }else if(response.isSuccessful() && response.code() == 204){
                     Toast.makeText(view.getContext(), "Email Already Exist!", Toast.LENGTH_LONG).show();

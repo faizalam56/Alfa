@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements SignupFragment.Si
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
+        overridePendingTransition(0, android.R.anim.slide_in_left);
         setContentView(R.layout.activity_main);
         FacebookSdk.sdkInitialize(getApplicationContext());
 //        printhashkey();

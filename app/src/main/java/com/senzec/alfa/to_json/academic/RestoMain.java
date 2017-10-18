@@ -1,4 +1,4 @@
-package com.senzec.alfa.to_json;
+package com.senzec.alfa.to_json.academic;
 
 import com.google.gson.Gson;
 
@@ -9,7 +9,7 @@ public class RestoMain {
 
     public static void main(String[] args){
 
-        List<AcademicMenuItem> academic_info = new ArrayList<>();
+   /*     List<AcademicMenuItem> academic_info = new ArrayList<>();
         academic_info.add(new AcademicMenuItem("MCA", "kiet", 2013, 2016));
         //academic_info.add(new AcademicMenuItem("MCA", "kiet", 2013, 2016));
         //academic_info.add(new AcademicMenuItem("MCA", "kiet", 2013, 2016));
@@ -25,6 +25,6 @@ public class RestoMain {
         Gson gson = new Gson();
         String restaurantJson = gson.toJson(restaurant);
         System.out.print(restaurantJson);
-
+*/
     }
 }

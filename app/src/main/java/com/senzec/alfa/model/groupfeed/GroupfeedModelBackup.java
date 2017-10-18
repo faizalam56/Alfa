@@ -4,9 +4,9 @@ package com.senzec.alfa.model.groupfeed;
  * Created by senzec on 7/10/17.
  */
 
-public class GroupfeedModel {
+public class GroupfeedModelBackup {
 
-    public GroupfeedModel(String groupName, int sizeOfpost) {
+    public GroupfeedModelBackup(String groupName, int sizeOfpost) {
         this.groupName = groupName;
         this.sizeOfpost = sizeOfpost;
     }

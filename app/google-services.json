@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "318632424927",
+    "project_id": "alpha-84afa"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:318632424927:android:2fd7cc4ca5ba6081",
+        "android_client_info": {
+          "package_name": "com.senzec.alfa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "318632424927-u1ts8f1ccamp8jl3bocog2jq3k91sj99.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "318632424927-c6jsqrqhbkk6ccp5pu70p4ha1qgd2rvv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.senzec.alfa",
+            "certificate_hash": "8a98a8b4c6df2a953c47747c707c55889cd74a54"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBF70C2hSmimMG2SWi_YDnCle-JTqpCuSA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

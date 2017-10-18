@@ -7,7 +7,6 @@
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         card_view:cardUseCompatPadding="true">
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,8 +26,7 @@
                     android:background="@color/White"
                     android:hint="B.com(H)"
                     android:padding="10dp"
-                    android:singleLine="true"
-                    android:text="a" />
+                    android:singleLine="true" />
 
             </android.support.v7.widget.CardView>
             // #College/SCHOOL
@@ -45,8 +43,7 @@
                     android:background="@color/White"
                     android:hint="School/College Name"
                     android:padding="10dp"
-                    android:singleLine="true"
-                    android:text="b"></EditText>
+                    android:singleLine="true"></EditText>
             </android.support.v7.widget.CardView>
             // #YEAR
             <LinearLayout
@@ -68,10 +65,9 @@
                         android:layout_marginRight="@dimen/horizontal_margin_small"
                         android:background="@color/White"
                         android:hint="Joining Year"
-                        android:inputType="date"
+                        android:inputType="number"
                         android:padding="@dimen/horizontal_margin_small"
-                        android:singleLine="true"
-                        android:text="1"></EditText>
+                        android:singleLine="true"></EditText>
                 </android.support.v7.widget.CardView>
                 <android.support.v7.widget.CardView
                     android:layout_width="0dp"
@@ -87,10 +83,9 @@
                         android:layout_marginLeft="@dimen/horizontal_margin_small"
                         android:background="@color/White"
                         android:hint="Final Year"
-                        android:inputType="date"
+                        android:inputType="number"
                         android:padding="@dimen/horizontal_margin_small"
-                        android:singleLine="true"
-                        android:text="2"></EditText>
+                        android:singleLine="true"></EditText>
                 </android.support.v7.widget.CardView>
             </LinearLayout>
         </LinearLayout>

@@ -1,9 +1,11 @@
 package com.senzec.alfa.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -23,8 +25,17 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.senzec.alfa.R;
 import com.senzec.alfa.activity.EditProfileActivity;
+import com.senzec.alfa.activity.GroupFeedActivity;
+import com.senzec.alfa.activity.GroupNameActivity;
 import com.senzec.alfa.activity.MyProfileActivity;
 import com.senzec.alfa.adapter.LoginParameter;
 import com.senzec.alfa.adapter.SignupParameter;
@@ -34,6 +45,7 @@ import com.senzec.alfa.model.login.Result;
 import com.senzec.alfa.model.signup.SignupModel;
 import com.senzec.alfa.parse_api_adapter.ApiClient;
 import com.senzec.alfa.parse_api_adapter.ApiInterface;
+
 import com.senzec.alfa.utils.Consts;
 import com.senzec.alfa.utils.SharedPrefClass;
 import com.senzec.alfa.model.login.LoginModel.*;
@@ -43,6 +55,7 @@ import org.json.JSONObject;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,11 +70,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     View view;
     EditText et_login_email,et_login_password;
     Button btn_login_submit,btn_signup,btn_login,btn_facebook_login;
-    ImageView iv_facebook_login;
+    ImageView iv_facebook_login, mGoogleSignupIV;
     LoginFragmentCommunicator communicator;
     private LoginButton loginButton;
     private Context mContext;
     private CallbackManager callbackManager;
+    GoogleSignInOptions gso;
+    GoogleApiClient mGoogleApiClient;
+    SignInButton signInButton;
+    int RC_SIGN_IN = 101;
+
     public void setLoginFragmentCommunicator(LoginFragmentCommunicator communicator){
         this.communicator = communicator;
     }
@@ -69,12 +87,34 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_login,container,false);
+
+        // Configure sign-in to request the user's ID, email address, and basic
+// profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+       gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        // Build a GoogleApiClient with access to the Google Sign-In API and the
+// options specified by gso.
+        mGoogleApiClient = new GoogleApiClient.Builder(view.getContext())
+                .enableAutoManage(getActivity() /* FragmentActivity */, new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+                        new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
+                                .setTitleText("Oops...")
+                                .setContentText("Something went wrong! Try Again")
+                                .show();
+                    }
+                })
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
         return view;
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         FontChangeCrawler fontChanger = new FontChangeCrawler(getActivity().getAssets(), "opensansregular.ttf","opensansregular.ttf");
         fontChanger.replaceFonts((ViewGroup) getActivity().findViewById(android.R.id.content));
         init();
@@ -82,6 +122,15 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         btn_login.setOnClickListener(this);
         btn_signup.setOnClickListener(this);
         iv_facebook_login.setOnClickListener(this);
+        btn_login.setTextColor(getResources().getColor(R.color.colorYellow));
+        btn_login_submit.setOnClickListener(this);
+        mGoogleSignupIV.setOnClickListener(this);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
     }
 
     private void init(){
@@ -91,11 +140,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         btn_signup = view.findViewById(R.id.btn_signup);
         btn_login = view.findViewById(R.id.btn_login);
         iv_facebook_login = view.findViewById(R.id.iv_facebook_login);
-
-        btn_login.setTextColor(getResources().getColor(R.color.colorYellow));
-
-        //
-        btn_login_submit.setOnClickListener(this);
+        mGoogleSignupIV = view.findViewById(R.id.sign_in_button);
     }
 
     @Override
@@ -110,11 +155,72 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 loginButton.performClick();
                 break;
             case R.id.btn_login_submit:
-         //       startActivity(new Intent((Activity)getContext(), MyProfileActivity.class));
+             //   startActivity(new Intent((Activity)getContext(), EditProfileActivity.class));
                 //performLogin();
                 checkValidation();
                 break;
+            case R.id.sign_in_button:
+                Toast.makeText(view.getContext(), "Google", Toast.LENGTH_LONG).show();
+                signIn();
+                break;
+           /* case R.id.sign_in_button:
+                signIn();
+                break;*/
 
+        }
+    }
+
+    private void signIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+       //     Toast.makeText(view.getContext(), "test", Toast.LENGTH_LONG).show();
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
+        }else {
+      //      Toast.makeText(view.getContext(), "Failed", Toast.LENGTH_LONG).show();
+            new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Oops...")
+                    .setContentText("Something went wrong! Try Again")
+                    .show();
+        }
+    }
+
+    private void handleSignInResult(GoogleSignInResult result) {
+        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
+        if (result.isSuccess()) {
+            // Signed in successfully, show authenticated UI.
+            GoogleSignInAccount acct = result.getSignInAccount();
+            new AlertDialog.Builder(view.getContext())
+                    .setTitle("GOOGLE Authentication")
+                    .setMessage(acct.getDisplayName()+"\n"+acct.getEmail()+"\n"+acct.getId()+"\n"+acct.getPhotoUrl())
+                    .show();
+            new SweetAlertDialog(getActivity(), SweetAlertDialog.SUCCESS_TYPE)
+                    .setTitleText("Hi,"+acct.getDisplayName()+"!")
+                    .setContentText("Welcome to ALPHA")
+                    .show();
+       //     mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
+        //    updateUI(true);
+        } else {
+            // Signed out, show unauthenticated UI.
+        //    updateUI(false);
+            GoogleSignInAccount acct = result.getSignInAccount();
+            new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Oops...")
+                    .setContentText("Authentication Failed! Try Again")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            getActivity().startActivity(new Intent(getActivity(), EditProfileActivity.class));
+                        }
+                    })
+                    .show();
         }
     }
 
@@ -211,7 +317,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
             }else{
                 et_login_email.setError("Not A Valid Mail");
             }
-
     }
 
     public void performLogin(){
@@ -230,10 +335,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 if(response.isSuccessful() && response.code() == 200) {
                     LoginModel loginModel = response.body();
                     if (loginModel.getResponseCode() == 200) {
-                        Toast.makeText(view.getContext(), "Login Success", Toast.LENGTH_LONG).show();
+                //        Toast.makeText(view.getContext(), "Login Success", Toast.LENGTH_LONG).show();
                      //   Result result = loginModel.getResult();
                         new SharedPrefClass(view.getContext()).setLogininfo(loginModel.getResult().getId());
-                        startActivity(new Intent((Activity)getContext(), EditProfileActivity.class));
+                        startActivity(new Intent((Activity)getContext(), GroupFeedActivity.class));
                     } else if(loginModel.getResponseCode() == 404)  {
                         Toast.makeText(view.getContext(), "Login Declined", Toast.LENGTH_LONG).show();
                     }
@@ -254,5 +359,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         } else {
             return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
     }
 }

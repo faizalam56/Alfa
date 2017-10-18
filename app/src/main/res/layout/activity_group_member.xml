@@ -28,12 +28,13 @@
             android:layout_centerInParent="true"
             android:textColor="@color/colorYellow"
             android:textSize="24sp"/>
+
         <com.senzec.alfa.utils.CircleImageView
+            android:id="@+id/idProfileIV"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_alignParentRight="true"
-            android:src="@drawable/img_profile"
-            />
+            android:src="@drawable/img_profile" />
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView

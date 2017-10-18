@@ -2,8 +2,8 @@ package com.senzec.alfa.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,32 +13,55 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.senzec.alfa.R;
 import com.senzec.alfa.font.FontChangeCrawler;
+import com.senzec.alfa.model.college_list.CollegeListModel;
+import com.senzec.alfa.model.college_list.Result;
+import com.senzec.alfa.model.college_list.web_api.CollegeListWebApiModel;
+import com.senzec.alfa.parse_api_adapter.ApiClient;
+import com.senzec.alfa.parse_api_adapter.ApiClientJSON;
+import com.senzec.alfa.parse_api_adapter.ApiInterface;
+import com.senzec.alfa.to_json.collegelist.CollegeWithMenu;
+import com.senzec.alfa.utils.Consts;
+import com.senzec.alfa.utils.ProgressClass;
+import com.senzec.alfa.utils.SharedPrefClass;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class CollegeListActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Planet[] planets ;
     private ArrayAdapter<Planet> listAdapter ;
     private Button btn_continue;
+    ApiInterface apiInterface;
+    ListView mainListView;
+    PlanetViewHolder viewHolder;
+    List<Result> tempCollegeList = new ArrayList<>();
+    List<String> selectedGroupList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(0, android.R.anim.slide_in_left);
         setContentView(R.layout.activity_college_list);
 
         // Find the ListView resource.
-        ListView mainListView = (ListView) findViewById( R.id.mainListView );
+        mainListView = (ListView) findViewById( R.id.mainListView );
         btn_continue = (Button) findViewById(R.id.btn_profile_continue);
         btn_continue.setOnClickListener(this);
 
         FontChangeCrawler fontChanger = new FontChangeCrawler(getAssets(), "opensansregular.ttf","opensansregular.ttf");
         fontChanger.replaceFonts((ViewGroup) findViewById(android.R.id.content));
-
 
         // When item is tapped, toggle checked properties of CheckBox and Planet.
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -52,36 +75,46 @@ public class CollegeListActivity extends AppCompatActivity implements View.OnCli
             }
         });
 
-
-        // Create and populate planets.
-        planets = (Planet[]) getLastCustomNonConfigurationInstance() ;
-        if ( planets == null ) {
-            planets = new Planet[] {
-                    new Planet("Group1"), new Planet("Group2"), new Planet("Group3"),
-                    new Planet("Group4"), new Planet("Group5"), new Planet("Group6"),
-                    new Planet("Group7"), new Planet("Group8"), new Planet("Group9"),
-                    new Planet("Group10"), new Planet("Group11"), new Planet("Group12"),
-                    new Planet("Group14"), new Planet("Group15"), new Planet("Group16"),
-                    new Planet("Group17")
-            };
-        }
-        ArrayList<Planet> planetList = new ArrayList<Planet>();
-        planetList.addAll( Arrays.asList(planets) );
-
-        // Set our custom array adapter as the ListView's adapter.
-        listAdapter = new PlanetArrayAdapter(CollegeListActivity.this, planetList);
-        mainListView.setAdapter( listAdapter );
+        funcCollegeListWebApi();
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btn_profile_continue:
-                startActivity(new Intent(CollegeListActivity.this,GroupFeedActivity.class));
+     //           startActivity(new Intent(CollegeListActivity.this,GroupFeedActivity.class));
+                sumOfSelectedItem();
                 break;
         }
     }
 
+    public void sumOfSelectedItem(){
+        for(int i = 0; i<listAdapter.getCount(); i++){
+            Planet planet = listAdapter.getItem( i );
+            if(listAdapter.getItem(i).isChecked() == true){
+             //   String groupName = listAdapter.getItem(i).name;
+                String groupID = tempCollegeList.get(i).getId();
+                if(groupID.length()>0)
+                { selectedGroupList.add(groupID);}
+
+            }
+        }
+        parseGson(selectedGroupList);
+
+     //   viewHolder.getCheckBox().setChecked( planet.isChecked() );
+    }
+
+    public void parseGson(List<String> group_id){
+
+        String userId = new SharedPrefClass(CollegeListActivity.this).getLoginInfo();
+        CollegeWithMenu profileMenu =
+                new CollegeWithMenu(group_id, userId);
+
+        Gson gson = new Gson();
+        String profileJson = gson.toJson(profileMenu);
+        System.out.print(profileJson);
+        sendJoinedGroupJsonRequest(profileJson);
+    }
     /** Holds planet data. */
     private static class Planet {
         private String name = "" ;
@@ -201,5 +234,147 @@ public class CollegeListActivity extends AppCompatActivity implements View.OnCli
 
     public Object onRetainCustomNonConfigurationInstance () {
         return planets ;
+    }
+
+    private void funcCollegeListWebApi()
+    {
+        apiInterface = ApiClient.getClient(Consts.BASE_URL).create(ApiInterface.class);
+        String user_id = new SharedPrefClass(CollegeListActivity.this).getLoginInfo();
+
+        Call<CollegeListModel> callCollegeList = apiInterface.collegeListResponse(user_id);
+        callCollegeList.enqueue(new Callback<CollegeListModel>() {
+            @Override
+            public void onResponse(Call<CollegeListModel> call, Response<CollegeListModel> response) {
+
+                if (response.isSuccessful() && response.code() == 200) {
+                    if(response.body().getResponseCode() == 200){
+                        Toast.makeText(CollegeListActivity.this, "Success", Toast.LENGTH_LONG).show();
+                        List<Result> collegeApiList = response.body().getResults();
+                        parseCollegeList(collegeApiList);
+                    }
+                } else {
+                    Toast.makeText(CollegeListActivity.this, "Confusion", Toast.LENGTH_LONG).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<CollegeListModel> call, Throwable t) {
+                call.cancel();
+                Toast.makeText(CollegeListActivity.this, "Failed!", Toast.LENGTH_LONG).show();
+            }
+        });
+
+    }
+
+    public void parseCollegeList(List<Result> collegeApiList){
+        // Create and populate planets.
+        planets = (Planet[]) getLastCustomNonConfigurationInstance() ;
+        if ( planets == null ) {
+
+            planets = new Planet[collegeApiList.size()];
+            for(int i = 0; i<collegeApiList.size(); i++){
+              //  planets = new Planet[i]; { new Planet(collegeApiList.get(i).getGroupName())};
+                planets[i] = new Planet(collegeApiList.get(i).getGroupName());
+            }
+
+        }
+        ArrayList<Planet> planetList = new ArrayList<Planet>();
+        planetList.addAll( Arrays.asList(planets) );
+
+        // Set our custom array adapter as the ListView's adapter.
+        listAdapter = new PlanetArrayAdapter(CollegeListActivity.this, planetList);
+        mainListView.setAdapter( listAdapter );
+        tempCollegeList = collegeApiList;
+    }
+
+
+
+    public void sendJoinedGroupJsonRequest(String profileJson){
+
+        //    Toast.makeText(EditProfileActivity.this, "Progress Started", Toast.LENGTH_LONG).show();
+        ProgressClass.getProgressInstance().startProgress(CollegeListActivity.this);
+        ApiInterface apiInterface = ApiClientJSON.getClient(Consts.BASE_URL).create(ApiInterface.class);
+        apiInterface.setUserJoinedGroup(profileJson).enqueue(new Callback<CollegeListWebApiModel>() {
+            @Override
+            public void onResponse(Call<CollegeListWebApiModel> call, Response<CollegeListWebApiModel> response) {
+
+                if(response.isSuccessful() && response.code() == 200) {
+                    CollegeListWebApiModel collegeListApiResponseModel = response.body();
+                    if (collegeListApiResponseModel.getResponseCode() == 200) {
+                        ProgressClass.getProgressInstance().stopProgress();
+                        Toast.makeText(CollegeListActivity.this, "Login Success", Toast.LENGTH_LONG).show();
+                        new SweetAlertDialog(CollegeListActivity.this, SweetAlertDialog.SUCCESS_TYPE)
+                                .setTitleText("Good job!")
+                                .setContentText("Data save succesfully!")
+                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sDialog) {
+                                        sDialog.dismissWithAnimation();
+                                        startActivity(new Intent(CollegeListActivity.this, GroupFeedActivity.class));
+                                    }
+                                })
+                                .show();
+
+                    } else if(collegeListApiResponseModel.getResponseCode() == 404)  {
+                        Toast.makeText(CollegeListActivity.this, "Login Declined", Toast.LENGTH_LONG).show();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<CollegeListWebApiModel> call, Throwable t) {
+                call.cancel();
+                Toast.makeText(CollegeListActivity.this, "Login Failed", Toast.LENGTH_LONG).show();
+                ProgressClass.getProgressInstance().stopProgress();
+            }
+        });
+//        apiInterface.setUserJoinedGroup(profileJson).enqueue(new Call
+
+/*
+apiInterface.setUserJoinedGroup(profileJson).enqueue(new Callback<AcademicJobModel>() {
+            @Override
+            public void onResponse(Call<AcademicJobModel> call, Response<AcademicJobModel> response) {
+                if(response.isSuccessful() && response.code() == 200) {
+                    AcademicJobModel academicJobModel = response.body();
+                    if (academicJobModel.getResponseCode() == 200) {
+                        ProgressClass.getProgressInstance().stopProgress();
+                        Toast.makeText(CollegeListActivity.this, "Login Success", Toast.LENGTH_LONG).show();
+                        new SweetAlertDialog(CollegeListActivity.this, SweetAlertDialog.SUCCESS_TYPE)
+                                .setTitleText("Good job!")
+                                .setContentText("Data save succesfully!")
+                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sDialog) {
+                                        sDialog.dismissWithAnimation();
+                                        startActivity(new Intent(CollegeListActivity.this, CollegeListActivity.class));
+                                    }
+                                })
+                                .show();
+
+                    } else if(academicJobModel.getResponseCode() == 404)  {
+                        Toast.makeText(CollegeListActivity.this, "Login Declined", Toast.LENGTH_LONG).show();
+                    }
+                }
+                //   Toast.makeText(EditProfileActivity.this, "Confused", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Call<AcademicJobModel> call, Throwable t) {
+                call.cancel();
+                Toast.makeText(CollegeListActivity.this, "Login Failed", Toast.LENGTH_LONG).show();
+            }
+        });
+*//*
+
+*/
+    }
+
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0, android.R.anim.slide_out_right);
     }
 }

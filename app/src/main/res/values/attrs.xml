@@ -23,4 +23,10 @@
     <declare-styleable name="DynamicHeightImageView">
         <attr name="heightRatio" format="float" />
     </declare-styleable>
+
+    <declare-styleable name="MultiSpinnerSearch">
+        <attr name="hintText" format="string"/>
+    </declare-styleable>
+
+
 </resources>

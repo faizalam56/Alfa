@@ -15,160 +15,6 @@
         android:textColor="@color/White"
         android:textSize="30sp"
         android:textStyle="bold"/>
-    <!--<FrameLayout
-        android:id="@+id/fl_signup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="20dp"
-        android:layout_marginTop="0dp"
-        android:visibility="gone">
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SIGN UP"
-                android:textSize="24sp"
-                android:textColor="@color/colorYellow"/>
-            <RelativeLayout
-                android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="6dp"
-                    android:background="@drawable/line"></ImageView>
-
-            </RelativeLayout>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/White"
-                android:padding="20dp"
-                android:layout_marginTop="40dp">
-
-                <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <EditText
-                        android:id="@+id/et_profile"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/colorEditBox"
-                        android:hint="Profile"
-                        android:padding="10dp"
-                        android:layout_marginLeft="30dp"
-                        android:singleLine="true"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-                    <ImageView
-                        android:layout_marginLeft="5dp"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="left|center_vertical"
-                        android:src="@drawable/profile"/>
-                </android.support.v7.widget.CardView>
-
-                <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
-
-                    <EditText
-                        android:id="@+id/et_userId"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/colorEditBox"
-                        android:hint="Email"
-                        android:padding="10dp"
-                        android:layout_marginLeft="30dp"
-                        android:singleLine="true"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-                    <ImageView
-                        android:layout_marginLeft="5dp"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="left|center_vertical"
-                        android:src="@drawable/mail"/>
-                </android.support.v7.widget.CardView>
-
-                <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
-
-                    <EditText
-                        android:id="@+id/et_password"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/colorEditBox"
-                        android:singleLine="true"
-                        android:hint="Password"
-                        android:padding="10dp"
-                        android:layout_marginLeft="30dp"
-                        android:inputType="textPassword"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-                    <ImageView
-                        android:layout_marginLeft="5dp"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="left|center_vertical"
-                        android:src="@drawable/password"/>
-                </android.support.v7.widget.CardView>
-
-                <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
-
-                    <EditText
-                        android:id="@+id/et_confirm_password"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/colorEditBox"
-                        android:hint="Mobile number"
-                        android:singleLine="true"
-                        android:padding="10dp"
-                        android:layout_marginLeft="30dp"
-                        android:inputType="textPassword"/>
-
-                    <ImageView
-                        android:layout_marginLeft="5dp"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="left|center_vertical"
-                        android:src="@drawable/phone"/>
-                </android.support.v7.widget.CardView>
-
-                <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
-
-                    <Button
-                        android:id="@+id/btn_submit"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/colorYellow"
-                        android:hint="SUBMIT"
-                        android:padding="10dp"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-
-                </android.support.v7.widget.CardView>
-            </LinearLayout>
-        </LinearLayout>
-
-    </FrameLayout>-->
 
     <FrameLayout
         android:id="@+id/fl_login"
@@ -226,10 +72,16 @@
                         android:visibility="gone" />
                 </FrameLayout>
 
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
                 <ImageView
+                    android:id="@+id/sign_in_button"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
-                    android:src="@drawable/google"/>
+                    android:src="@drawable/google" />
+
+                </FrameLayout>
             </LinearLayout>
             <LinearLayout
                 android:orientation="vertical"
@@ -254,7 +106,6 @@
                         android:inputType="textEmailAddress"
                         android:padding="10dp"
                         android:singleLine="true"
-                        android:text="diwakar@senzecit.com"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
 
                     <ImageView
@@ -281,7 +132,6 @@
                         android:inputType="textPassword"
                         android:padding="10dp"
                         android:singleLine="true"
-                        android:text="12345678"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
 
                     <ImageView

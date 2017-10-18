@@ -21,18 +21,21 @@ public class EnquiryActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
+        overridePendingTransition(0, android.R.anim.slide_in_left);
         setContentView(R.layout.activity_enquiry);
 
 //        lv_enquiry_message = (ListView) findViewById(R.id.lv_enquiry_message);
         iv_back = (ImageView) findViewById(R.id.iv_back);
 
-        iv_back.setOnClickListener(this);
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
         FontChangeCrawler fontChanger = new FontChangeCrawler(this.getAssets(), "opensansregular.ttf","opensansregular.ttf");
         fontChanger.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
+        iv_back.setOnClickListener(this);
 
-        /*EnquiryListAdapter adapter = new EnquiryListAdapter(this);
-        lv_enquiry_message.setAdapter(adapter);*/
     }
 
     @Override
@@ -43,33 +46,11 @@ public class EnquiryActivity extends AppCompatActivity implements View.OnClickLi
                 break;
         }
     }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0, android.R.anim.slide_out_right);
+    }
 }
 
-class EnquiryListAdapter extends BaseAdapter{
-    Context context;
-    public EnquiryListAdapter(Context context){
-        this.context = context;
-    }
-    @Override
-    public int getCount() {
-        return 1;
-    }
-
-    @Override
-    public Object getItem(int i) {
-        return null;
-    }
-
-    @Override
-    public long getItemId(int i) {
-        return 0;
-    }
-
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        view = inflater.inflate(R.layout.enquiry_list_item,viewGroup,false);
-
-        return view;
-    }
-}

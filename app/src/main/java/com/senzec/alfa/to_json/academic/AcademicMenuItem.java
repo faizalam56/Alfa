@@ -1,4 +1,4 @@
-package com.senzec.alfa.to_json;
+package com.senzec.alfa.to_json.academic;
 
 public class AcademicMenuItem {
     String qualification;

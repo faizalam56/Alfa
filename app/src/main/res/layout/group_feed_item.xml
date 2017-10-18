@@ -21,7 +21,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="0dp">
                 <TextView
-                    android:id="@+id/idGroupName"
+                    android:id="@+id/idGroupNameTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Group Name"
@@ -30,7 +30,7 @@
                     />
                 <LinearLayout
                     android:layout_marginTop="5dp"
-                    android:layout_below="@+id/idGroupName"
+                    android:layout_below="@+id/idGroupNameTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true">

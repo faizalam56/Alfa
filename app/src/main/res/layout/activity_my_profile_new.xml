@@ -11,11 +11,13 @@
         android:layout_height="0dp"
         android:layout_weight="4.2"
         >
+
         <ImageView
+            android:id="@+id/idProfileImage"
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:src="@drawable/img_my_profile"
-            android:scaleType="fitXY"/>
+            android:scaleType="fitXY"
+            android:src="@drawable/img_my_profile" />
         <ImageView
             android:id="@+id/idBackIV"
             android:layout_width="48dp"
@@ -52,16 +54,16 @@
                 >
 
                 <Button
-                    android:id="@+id/btn_enquires"
+                    android:id="@+id/idChatHistory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Enquiries"
+                    android:layout_marginLeft="30dp"
+                    android:background="@color/White"
                     android:gravity="left"
                     android:padding="10dp"
-                    android:textSize="20sp"
-                    android:background="@color/White"
-                    android:layout_marginLeft="30dp"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:text="Chat History"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="20sp" />
 
                 <ImageView
                     android:layout_marginLeft="5dp"
@@ -85,16 +87,16 @@
                 >
 
                 <Button
-                    android:id="@+id/btn_companies"
+                    android:id="@+id/idCompanyBtn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Companies"
-                    android:gravity="left"
-                    android:padding="10dp"
-                    android:textSize="20sp"
                     android:layout_marginLeft="30dp"
                     android:background="@color/White"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:gravity="left"
+                    android:padding="10dp"
+                    android:text="Companies"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="20sp" />
 
                 <ImageView
                     android:layout_marginLeft="5dp"
@@ -118,16 +120,16 @@
                 >
 
                 <Button
-                    android:id="@+id/btn_invite_member"
+                    android:id="@+id/idInviteMemberBtn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Invite Members"
-                    android:gravity="left"
-                    android:padding="10dp"
-                    android:textSize="20sp"
                     android:layout_marginLeft="30dp"
                     android:background="@color/White"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:gravity="left"
+                    android:padding="10dp"
+                    android:text="Invite Members"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="20sp" />
 
                 <ImageView
                     android:layout_marginLeft="5dp"

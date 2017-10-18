@@ -13,14 +13,14 @@
         android:layout_height="55dp"
         android:padding="5dp"
         android:background="@color/colorBlack">
+
         <ImageView
-            android:id="@+id/iv_back"
+            android:id="@+id/idBackIV"
             android:layout_width="58dp"
             android:layout_height="44dp"
-            android:src="@drawable/ic_back"
-            android:layout_marginTop="2dp"
             android:layout_marginLeft="@dimen/vertical_margin_small"
-            />
+            android:layout_marginTop="2dp"
+            android:src="@drawable/ic_back" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -28,12 +28,13 @@
             android:layout_centerInParent="true"
             android:textColor="@color/colorYellow"
             android:textSize="24sp"/>
+
         <com.senzec.alfa.utils.CircleImageView
+            android:id="@+id/idProfileIV"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_alignParentRight="true"
-            android:src="@drawable/img_profile"
-            />
+            android:src="@drawable/img_profile" />
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView

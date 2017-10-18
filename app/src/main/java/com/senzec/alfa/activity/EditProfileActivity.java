@@ -5,9 +5,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,11 +23,12 @@ import com.senzec.alfa.font.FontChangeCrawler;
 import com.senzec.alfa.model.academic.AcademicJobModel;
 import com.senzec.alfa.parse_api_adapter.ApiClientJSON;
 import com.senzec.alfa.parse_api_adapter.ApiInterface;
-import com.senzec.alfa.to_json.AcademicMenuItem;
-import com.senzec.alfa.to_json.AcademicWithMenu;
-import com.senzec.alfa.to_json.JobMenuItem;
+import com.senzec.alfa.to_json.academic.AcademicMenuItem;
+import com.senzec.alfa.to_json.academic.AcademicWithMenu;
+import com.senzec.alfa.to_json.academic.JobMenuItem;
 import com.senzec.alfa.utils.Consts;
 import com.senzec.alfa.utils.ProgressClass;
+import com.senzec.alfa.utils.SharedPrefClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,18 +40,22 @@ import retrofit2.Response;
 
 public class EditProfileActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher{
 
+    private static final String TAG = "EditProfileActivity";
     Button mProfileContinueBtn, mAddAcademicBtn, mAddJobBtn;
     ListView mAcademicList, mJobInfoList;
+    EditText mCurrentCompany;
     int countAcademic=1, countJob = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(0, android.R.anim.slide_in_left);
         setContentView(R.layout.activity_edit_profile);
 
         mAcademicList = (ListView)findViewById(R.id.idAcademic);
         mJobInfoList = (ListView)findViewById(R.id.idJobInfo);
 
+        mCurrentCompany = (EditText) findViewById(R.id.et_current_company_name);
         mAddAcademicBtn = (Button)findViewById(R.id.idAddAcademic);
         mAddJobBtn = (Button)findViewById(R.id.idAddJob);
         mProfileContinueBtn = (Button)findViewById(R.id.btn_profile_continue) ;
@@ -84,7 +91,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 jobListView(countJob);
                 break;
             case R.id.btn_profile_continue:
-          //      startActivity(new Intent(EditProfileActivity.this, CollegeListActivity.class));
+                startActivity(new Intent(EditProfileActivity.this, CollegeListActivity.class));
                 submitAcademicJobInfo();
       //          Toast.makeText(EditProfileActivity.this, "Academic : "+countAcademic+", Job : "+countJob, Toast.LENGTH_LONG).show();
                 break;
@@ -146,33 +153,43 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         View parentViewJob = null;
 
         for (int i = 0; i < countAcademic; i++) {
-            parentViewAcademic = getViewByPosition(i, mAcademicList);
-         //   parentViewAcademic = (View) mAcademicList.getParent();
-            String strDegree = ((TextView) parentViewAcademic.findViewById(R.id.idDegreeET)).getText().toString().trim();
-            String strInstitute = ((TextView) parentViewAcademic.findViewById(R.id.idInstituteName)).getText().toString().trim();
-            String strAcademicJY = ((TextView) parentViewAcademic.findViewById(R.id.idJoinYearAcademicET)).getText().toString().trim();
-            String strAcademicFY = ((TextView) parentViewAcademic.findViewById(R.id.idFinalYearAcademicET)).getText().toString().trim();
+            try {
+                parentViewAcademic = getViewByPosition(i, mAcademicList);
+                //   parentViewAcademic = (View) mAcademicList.getParent();
+                String strDegree = ((TextView) parentViewAcademic.findViewById(R.id.idDegreeET)).getText().toString().trim();
+                String strInstitute = ((TextView) parentViewAcademic.findViewById(R.id.idInstituteName)).getText().toString().trim();
+                String strAcademicJY = ((TextView) parentViewAcademic.findViewById(R.id.idJoinYearAcademicET)).getText().toString().trim();
+                String strAcademicFY = ((TextView) parentViewAcademic.findViewById(R.id.idFinalYearAcademicET)).getText().toString().trim();
 
-            academic_info.add(new AcademicMenuItem(strDegree, strInstitute, Integer.parseInt(strAcademicJY), Integer.parseInt(strAcademicFY)));
+                academic_info.add(new AcademicMenuItem(strDegree, strInstitute, Integer.parseInt(strAcademicJY), Integer.parseInt(strAcademicFY)));
+            }catch (NumberFormatException nfe){
+                Log.e(TAG, "#Error : "+nfe);
+            }
         }
 
         for (int i = 0; i < countJob; i++) {
-            parentViewJob = getViewByPosition(i, mJobInfoList);
-            //  parentViewJob = (View) mJobInfoList.getParent();
-            String strDesignation = ((TextView) parentViewJob.findViewById(R.id.idDesignationET)).getText().toString().trim();
-            String strCompany = ((TextView) parentViewJob.findViewById(R.id.idCompanyName)).getText().toString().trim();
-            String strJobJY = ((TextView) parentViewJob.findViewById(R.id.idJoinYearJobET)).getText().toString().trim();
-            String strJobFY = ((TextView) parentViewJob.findViewById(R.id.idFinalYearJobET)).getText().toString().trim();
+            try {
+                parentViewJob = getViewByPosition(i, mJobInfoList);
+                //  parentViewJob = (View) mJobInfoList.getParent();
+                String strDesignation = ((TextView) parentViewJob.findViewById(R.id.idDesignationET)).getText().toString().trim();
+                String strCompany = ((TextView) parentViewJob.findViewById(R.id.idCompanyName)).getText().toString().trim();
+                String strJobJY = ((TextView) parentViewJob.findViewById(R.id.idJoinYearJobET)).getText().toString().trim();
+                String strJobFY = ((TextView) parentViewJob.findViewById(R.id.idFinalYearJobET)).getText().toString().trim();
 
-            job_info.add(new JobMenuItem(strDesignation, Integer.parseInt(strJobJY), strCompany, Integer.parseInt(strJobFY)));
+                job_info.add(new JobMenuItem(strDesignation, Integer.parseInt(strJobJY), strCompany, Integer.parseInt(strJobFY)));
+            }catch (NumberFormatException nfe){
+                Log.e(TAG, "#Error : "+nfe);
+            }
+
         }
 
         //    convertToJSON( strDegree, strInstitute, strAcademicJY, strAcademicFY, strDesignation, strCompany, strJobJY, strJobFY);
      //   Toast.makeText(EditProfileActivity.this, "output : "+strDegree+strInstitute+strAcademicJY+strAcademicFY+"="+strDesignation+strCompany+strJobJY+strJobFY, Toast.LENGTH_LONG).show();
-
+        String loggedUser = new SharedPrefClass(EditProfileActivity.this).getLoginInfo();
+        String current_company_name = mCurrentCompany.getText().toString().trim();
         AcademicWithMenu profileMenu =
-                new AcademicWithMenu("59d6166ad4689273cbafb9c6", academic_info, job_info);
-
+                new AcademicWithMenu(loggedUser, current_company_name, academic_info, job_info);
+// current_company_name
         Gson gson = new Gson();
         String profileJson = gson.toJson(profileMenu);
         System.out.print(profileJson);
@@ -232,5 +249,11 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             }
         });
 
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0, android.R.anim.slide_out_right);
     }
 }

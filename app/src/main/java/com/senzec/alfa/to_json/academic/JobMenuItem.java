@@ -1,4 +1,4 @@
-package com.senzec.alfa.to_json;
+package com.senzec.alfa.to_json.academic;
 
 public class JobMenuItem {
     String job_designation;

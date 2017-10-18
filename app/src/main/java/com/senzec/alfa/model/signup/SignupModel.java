@@ -3,8 +3,11 @@ package com.senzec.alfa.model.signup;
 /**
  * Created by senzec on 4/10/17.
  */
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+
+        import java.util.List;
+        import com.google.gson.annotations.Expose;
+        import com.google.gson.annotations.SerializedName;
+
 
 public class SignupModel {
 
@@ -19,7 +22,7 @@ public class SignupModel {
     private String token;
     @SerializedName("result")
     @Expose
-    private String result;
+    private Result result;
 
     public Integer getResponseCode() {
         return responseCode;
@@ -45,11 +48,11 @@ public class SignupModel {
         this.token = token;
     }
 
-    public String getResult() {
+    public Result getResult() {
         return result;
     }
 
-    public void setResult(String result) {
+    public void setResult(Result result) {
         this.result = result;
     }
 
