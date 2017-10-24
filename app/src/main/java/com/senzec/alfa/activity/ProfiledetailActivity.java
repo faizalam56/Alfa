@@ -1,14 +1,18 @@
 package com.senzec.alfa.activity;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 import com.senzec.alfa.R;
 import com.senzec.alfa.adapter.CustomAcademicAdapter;
 import com.senzec.alfa.adapter.CustomJobInfoAdapter;
@@ -22,6 +26,8 @@ import com.senzec.alfa.parse_api_adapter.ApiClient;
 import com.senzec.alfa.parse_api_adapter.ApiInterface;
 import com.senzec.alfa.utils.Consts;
 import com.senzec.alfa.utils.SharedPrefClass;
+import com.senzec.alfa.utils.cache.DownloadImageTask;
+import com.senzec.alfa.utils.cache.ImagesCache;
 
 import java.util.List;
 
@@ -34,12 +40,14 @@ public class ProfiledetailActivity extends Activity {
     ApiInterface apiInterface;
     ListView mAcademicList, mJobInfoList;
     TextView tvName, tvEmail, tvCurrentCompany, tvPhoneNo, tvCV;
+    ImageView mProfileIV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profiledetail);
 
+        mProfileIV = (ImageView)findViewById(R.id.idProfileImage) ;
         mAcademicList = (ListView)findViewById(R.id.idAcademic);
         mJobInfoList = (ListView)findViewById(R.id.idJobInfo);
         initView();
@@ -105,12 +113,43 @@ public class ProfiledetailActivity extends Activity {
 
     private void setPersonalInfo(Result result){
 
+        result.getProfilePic();
         tvName.setText(result.getUserName());
         tvEmail.setText(result.getEmailId());
         tvCurrentCompany.setText(result.getCurrentCompanyName());
         tvPhoneNo.setText(String.valueOf(result.getPhoneNumber()));
-        tvCV.setText(result.getCv());
+        tvCV.setText(getFileName(result.getCv()));
     }
+
+    private void loadProfileImage(String profileURL){
+
+        if(profileURL != null) {
+
+            //IMAGE CACHE START
+            ImagesCache cache = ImagesCache.getInstance();//Singleton instance handled in ImagesCache class.
+            cache.initializeCache();
+            Bitmap bm = cache.getImageFromWarehouse(profileURL);
+            if (bm != null) {
+                Glide.with(ProfiledetailActivity.this)
+                        .load(bm)
+                        .into(mProfileIV);
+            } else {
+                Glide.with(ProfiledetailActivity.this)
+                        .load(profileURL)
+                        .into(mProfileIV);
+
+                DownloadImageTask imgTask = new DownloadImageTask(cache, mProfileIV, 300, 300);//Since you are using it from `Activity` call second Constructor.
+                imgTask.execute(profileURL);
+            }
+
+        }
+    }
+
+
+    private String getFileName(String filePath){
+        return filePath.substring(filePath.lastIndexOf("/")+1);
+    }
+
     private void setAcademicListView(List<AcademicInfo> academicInfosList){
         ProfileAcademicAdapter academicAdapter = new ProfileAcademicAdapter(ProfiledetailActivity.this, academicInfosList);
         mAcademicList.setAdapter(academicAdapter);
