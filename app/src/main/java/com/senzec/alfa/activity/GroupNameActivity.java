@@ -1,6 +1,7 @@
 package com.senzec.alfa.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.senzec.alfa.R;
 import com.senzec.alfa.adapter.GroupNameAdapter;
 import com.senzec.alfa.adapter.GroupNameParameter;
@@ -22,17 +24,24 @@ import com.senzec.alfa.model.group_name.Result;
 import com.senzec.alfa.model.signup.SignupModel;
 import com.senzec.alfa.parse_api_adapter.ApiClient;
 import com.senzec.alfa.parse_api_adapter.ApiInterface;
+import com.senzec.alfa.preference.AppPrefs;
+import com.senzec.alfa.utils.ConnectivityManagerClass;
 import com.senzec.alfa.utils.Consts;
 import com.senzec.alfa.utils.SharedPrefClass;
+import com.senzec.alfa.utils.cache.DownloadImageTask;
+import com.senzec.alfa.utils.cache.ImagesCache;
 
 import java.util.List;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class GroupNameActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG = "GroupNameActivity";
+    AppPrefs prefs;
     RecyclerView mGroupNameRC;
     GroupNameAdapter adapter;
     ImageView mBackIV, mProfileIV;
@@ -51,6 +60,9 @@ public class GroupNameActivity extends AppCompatActivity implements View.OnClick
         mProfileIV = (ImageView)findViewById(R.id.idProfileIV);
         mGroupNameRC = (RecyclerView) findViewById(R.id.rv_group_feed);
         mFloatingButton = (FloatingActionButton) findViewById(R.id.idFab);
+
+        prefs  = new AppPrefs(GroupNameActivity.this);
+        loadProfileImage();
     }
 
     @Override
@@ -63,12 +75,24 @@ public class GroupNameActivity extends AppCompatActivity implements View.OnClick
         mProfileIV.setOnClickListener(GroupNameActivity.this);
         mFloatingButton.setOnClickListener(this);
 
-        getJobPost();
-
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         mGroupNameRC.setLayoutManager(layoutManager);
-        /*adapter = new GroupNameAdapter(GroupNameActivity.this);
-        mGroupNameRC.setAdapter(adapter);*/
+        if(ConnectivityManagerClass.getInstance().isNetworkAvailable(GroupNameActivity.this) == true) {
+        getJobPost();
+        }else {
+            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(GroupNameActivity.this, SweetAlertDialog.CUSTOM_IMAGE_TYPE);
+            sweetAlertDialog.setTitleText("No Network!");
+            sweetAlertDialog.setContentText("Press 'OK' to Retry");
+            sweetAlertDialog.setCustomImage(R.drawable.ic_disconnected);
+            sweetAlertDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                @Override
+                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                    sweetAlertDialog.dismiss();
+
+                }
+            })
+                    .show();
+        }
 
     }
 
@@ -130,6 +154,32 @@ public class GroupNameActivity extends AppCompatActivity implements View.OnClick
             }
         });
 
+    }
+
+    private void loadProfileImage(){
+
+        String profileURL = prefs.getString(Consts.PROFILE_URL);
+        if(profileURL != null) {
+
+            //IMAGE CACHE START
+            ImagesCache cache = ImagesCache.getInstance();//Singleton instance handled in ImagesCache class.
+            cache.initializeCache();
+            Bitmap bm = cache.getImageFromWarehouse(profileURL);
+            if (bm != null) {
+                Glide.with(GroupNameActivity.this)
+                        .load(bm)
+                        .into(mProfileIV);
+            } else {
+                Glide.with(GroupNameActivity.this)
+                        .load(profileURL)
+                        .error(R.drawable.img_profile)
+                        .into(mProfileIV);
+
+                DownloadImageTask imgTask = new DownloadImageTask(cache, mProfileIV, 300, 300);//Since you are using it from `Activity` call second Constructor.
+                imgTask.execute(profileURL);
+            }
+
+        }
     }
     @Override
     public void finish() {

@@ -46,7 +46,7 @@
     </array>
 
     // CHAT COLOR
-    <color name="username0">#e21400</color>
+  <!--  <color name="username0">#e21400</color>
     <color name="username1">#91580f</color>
     <color name="username2">#f8a700</color>
     <color name="username3">#f78b00</color>
@@ -62,6 +62,23 @@
     <color name="list_even">#AAAAAA </color>
     <color name="list_odd">#E1E2E2 </color>
     <color name="list_selected">#455FB6 </color>
-    <color name="list_header">#99979C </color>
+    <color name="list_header">#99979C </color>-->
+    <color name="username0">#444444</color>
+    <color name="username1">#444444</color>
+    <color name="username2">#444444</color>
+    <color name="username3">#444444</color>
+    <color name="username4">#444444</color>
+    <color name="username5">#444444</color>
+    <color name="username6">#444444</color>
+    <color name="username7">#444444</color>
+    <color name="username8">#444444</color>
+    <color name="username9">#444444</color>
+    <color name="username10">#444444</color>
+    <color name="username11">#444444</color>
+
+    <color name="list_even">#444444 </color>
+    <color name="list_odd">#444444 </color>
+    <color name="list_selected">#444444 </color>
+    <color name="list_header">#444444 </color>
 
 </resources>

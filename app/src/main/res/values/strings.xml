@@ -46,4 +46,9 @@
     <string name="group_name">Group</string>
     <string name="sub_group_name">Sub Group</string>
 
+    // Profile Detail
+    <string name="str_personal_info">Personal Info</string>
+    <string name="str_academic_info">Academic Info</string>
+    <string name="str_job_info">Job Info</string>
+
 </resources>

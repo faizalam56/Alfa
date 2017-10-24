@@ -26,7 +26,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sdsmdg.tastytoast.TastyToast;
 import com.senzec.alfa.R;
+import com.senzec.alfa.activity.GroupFeedActivity;
 import com.senzec.alfa.model.groupfeed.GroupFeedResponseModel;
 import com.senzec.alfa.model.socket_chat.Chat;
 import com.senzec.alfa.model.socket_chat.ChatHistoryModel;
@@ -34,6 +36,7 @@ import com.senzec.alfa.model.socket_chat.JobsDetail;
 import com.senzec.alfa.model.socket_chat.parameterized_request.ChatPostRequest;
 import com.senzec.alfa.parse_api_adapter.ApiClient;
 import com.senzec.alfa.parse_api_adapter.ApiInterface;
+import com.senzec.alfa.utils.ConnectivityManagerClass;
 import com.senzec.alfa.utils.Consts;
 import com.senzec.alfa.utils.ProgressClass;
 import com.senzec.alfa.utils.SharedPrefClass;
@@ -44,6 +47,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import retrofit2.Call;
@@ -93,6 +97,12 @@ public class MainFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
+            startEvent();
+
+    }
+
+    public void startEvent(){
+        if(ConnectivityManagerClass.getInstance().isNetworkAvailable(getActivity()) == true) {
         ChatApplication app = (ChatApplication) getActivity().getApplication();
         mSocket = app.getSocket();
         mSocket.on(Socket.EVENT_CONNECT,onConnect);
@@ -110,6 +120,21 @@ public class MainFragment extends Fragment {
         startSignIn();
         previousChatWebApi();
         addMessage("Divakar", "This is test");
+
+        }else {
+            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(getActivity(), SweetAlertDialog.CUSTOM_IMAGE_TYPE);
+            sweetAlertDialog.setTitleText("No Network!");
+            sweetAlertDialog.setContentText("Press 'OK' to Retry");
+            sweetAlertDialog.setCustomImage(R.drawable.ic_disconnected);
+            sweetAlertDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            sweetAlertDialog.dismiss();
+                            startEvent();
+                        }
+                    })
+                    .show();
+        }
     }
 
     private void previousChatWebApi(){
@@ -125,16 +150,19 @@ public class MainFragment extends Fragment {
             public void onResponse(Call<ChatHistoryModel> call, Response<ChatHistoryModel> response) {
                 ProgressClass.getProgressInstance().stopProgress();
                 if(response.isSuccessful()&&response.code()==200) {
+                    try{
                     Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
-
                     List<Chat> chatList = response.body().getResult().getJobsDetail().get(0).getChats();
                     String user = "";
                     String message = "";
 
-                    for(int i = 0; i<chatList.size(); i++){
+                    for(int i = 0; i<chatList.size(); i++) {
                         message = chatList.get(i).getMessage();
                         user = chatList.get(i).getSenderId().getUserName();
                         addMessage(user, message);
+                    }
+                    }catch (NullPointerException npe){
+                        Log.e(TAG, "#Error : "+npe, npe);
                     }
                 } else {
                     Toast.makeText(getActivity(), "Confused", Toast.LENGTH_SHORT).show();
@@ -406,6 +434,8 @@ public class MainFragment extends Fragment {
                     isConnected = false;
                     Toast.makeText(getActivity().getApplicationContext(),
                             R.string.disconnect, Toast.LENGTH_LONG).show();
+                    TastyToast.makeText(getActivity(), "Disconnected, Please check your internet connection", TastyToast.LENGTH_LONG,
+                            TastyToast.ERROR);
                 }
             });
         }
@@ -418,8 +448,10 @@ public class MainFragment extends Fragment {
                 @Override
                 public void run() {
                     Log.e(TAG, "Error connecting");
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            R.string.error_connect, Toast.LENGTH_LONG).show();
+                   /* Toast.makeText(getActivity().getApplicationContext(),
+                            R.string.error_connect, Toast.LENGTH_LONG).show();*/
+                    TastyToast.makeText(getActivity(), "Connection failed ! Try again later ", TastyToast.LENGTH_LONG,
+                            TastyToast.ERROR);
                 }
             });
         }

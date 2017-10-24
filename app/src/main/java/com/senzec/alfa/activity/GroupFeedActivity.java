@@ -1,6 +1,7 @@
 package com.senzec.alfa.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 import com.senzec.alfa.R;
 import com.senzec.alfa.adapter.GroupFeedAdapter;
 import com.senzec.alfa.font.FontChangeCrawler;
@@ -20,16 +23,24 @@ import com.senzec.alfa.model.groupfeed.GroupFeedRequest;
 import com.senzec.alfa.model.groupfeed.GroupFeedResponseModel;
 import com.senzec.alfa.parse_api_adapter.ApiClient;
 import com.senzec.alfa.parse_api_adapter.ApiInterface;
+import com.senzec.alfa.preference.AppPrefs;
+import com.senzec.alfa.utils.ConnectivityManagerClass;
 import com.senzec.alfa.utils.Consts;
 import com.senzec.alfa.utils.ProgressClass;
 import com.senzec.alfa.utils.SharedPrefClass;
+import com.senzec.alfa.utils.cache.DownloadImageTask;
+import com.senzec.alfa.utils.cache.ImagesCache;
 
 import java.util.List;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import retrofit2.Call;
 import retrofit2.Callback;
 
 public class GroupFeedActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG = "GroupFeedActivity";
+    AppPrefs prefs;
     RecyclerView rcGroupfeed;
     ImageView iv_menu, mProfileIV, mNavigationIV;
    // ArrayList<GroupfeedModel> groupfeedModelArrayList = null;
@@ -51,9 +62,27 @@ public class GroupFeedActivity extends AppCompatActivity implements View.OnClick
         mFeedSearch = (EditText)findViewById(R.id.idFeedSearch);
         mGroupBtn = (Button)findViewById(R.id.idGroupBtn);
         mSubGroupBtn = (Button)findViewById(R.id.idSubGroupBtn);
-
         rcGroupfeed = (RecyclerView) findViewById(R.id.rv_group_feed);
+
+        prefs = new AppPrefs(GroupFeedActivity.this);
+        loadProfileImage();
+        if(ConnectivityManagerClass.getInstance().isNetworkAvailable(GroupFeedActivity.this) == true) {
         callGroupFeedApi();
+    }else {
+            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(GroupFeedActivity.this, SweetAlertDialog.CUSTOM_IMAGE_TYPE);
+            sweetAlertDialog.setTitleText("No Network!");
+            sweetAlertDialog.setContentText("Press 'OK' to Retry");
+            sweetAlertDialog.setCustomImage(R.drawable.ic_disconnected);
+            sweetAlertDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                @Override
+                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                    sweetAlertDialog.dismiss();
+
+                }
+            })
+             .show();
+    }
+
 
     }
 
@@ -65,21 +94,6 @@ public class GroupFeedActivity extends AppCompatActivity implements View.OnClick
         fontChanger.replaceFonts((ViewGroup) this.findViewById(android.R.id.content));
         mNavigationIV.setOnClickListener(this);
         mProfileIV.setOnClickListener(GroupFeedActivity.this);
-
-
-
-       /* //Data
-        groupfeedModelArrayList = new ArrayList<>();
-        groupfeedModelArrayList.add(new GroupfeedModel("Group Name - 1", 10));
-        groupfeedModelArrayList.add(new GroupfeedModel("College Name - 2", 110));
-        groupfeedModelArrayList.add(new GroupfeedModel("Group Name - 3", 5));
-        groupfeedModelArrayList.add(new GroupfeedModel("Institute Name - 4", 15));
-        groupfeedModelArrayList.add(new GroupfeedModel("Group Name - 5", 55));
-        groupfeedModelArrayList.add(new GroupfeedModel("School Name - 6", 40));
-        groupfeedModelArrayList.add(new GroupfeedModel("Group Name - 7", 10));
-        groupfeedModelArrayList.add(new GroupfeedModel("Delhi Name - 8", 100));
-        groupfeedModelArrayList.add(new GroupfeedModel("Group Name - 9", 101));
-        groupfeedModelArrayList.add(new GroupfeedModel("Alpha Name - 10", 256));*/
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         rcGroupfeed.setLayoutManager(layoutManager);
@@ -166,5 +180,32 @@ public class GroupFeedActivity extends AppCompatActivity implements View.OnClick
             });
         }
     }
+
+    private void loadProfileImage(){
+
+        String profileURL = prefs.getString(Consts.PROFILE_URL);
+        if(profileURL != null) {
+
+            //IMAGE CACHE START
+            ImagesCache cache = ImagesCache.getInstance();//Singleton instance handled in ImagesCache class.
+            cache.initializeCache();
+            Bitmap bm = cache.getImageFromWarehouse(profileURL);
+            if (bm != null) {
+                Glide.with(GroupFeedActivity.this)
+                        .load(bm)
+                        .into(mProfileIV);
+            } else {
+                Glide.with(GroupFeedActivity.this)
+                        .load(profileURL)
+                        .error(R.drawable.img_profile)
+                        .into(mProfileIV);
+
+                DownloadImageTask imgTask = new DownloadImageTask(cache, mProfileIV, 300, 300);//Since you are using it from `Activity` call second Constructor.
+                imgTask.execute(profileURL);
+            }
+
+        }
+    }
+
 }
 

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.sdsmdg.tastytoast.TastyToast;
 import com.senzec.alfa.R;
 import com.senzec.alfa.font.FontChangeCrawler;
 import com.senzec.alfa.model.college_list.CollegeListModel;
@@ -25,6 +26,7 @@ import com.senzec.alfa.parse_api_adapter.ApiClient;
 import com.senzec.alfa.parse_api_adapter.ApiClientJSON;
 import com.senzec.alfa.parse_api_adapter.ApiInterface;
 import com.senzec.alfa.to_json.collegelist.CollegeWithMenu;
+import com.senzec.alfa.utils.ConnectivityManagerClass;
 import com.senzec.alfa.utils.Consts;
 import com.senzec.alfa.utils.ProgressClass;
 import com.senzec.alfa.utils.SharedPrefClass;
@@ -55,7 +57,6 @@ public class CollegeListActivity extends AppCompatActivity implements View.OnCli
         overridePendingTransition(0, android.R.anim.slide_in_left);
         setContentView(R.layout.activity_college_list);
 
-        // Find the ListView resource.
         mainListView = (ListView) findViewById( R.id.mainListView );
         btn_continue = (Button) findViewById(R.id.btn_profile_continue);
         btn_continue.setOnClickListener(this);
@@ -75,16 +76,45 @@ public class CollegeListActivity extends AppCompatActivity implements View.OnCli
             }
         });
 
-        funcCollegeListWebApi();
+        if(ConnectivityManagerClass.getInstance().isNetworkAvailable(CollegeListActivity.this) == true) {
+            funcCollegeListWebApi();
+        }else {
+            new SweetAlertDialog(this, SweetAlertDialog.CUSTOM_IMAGE_TYPE)
+                    .setTitleText("Oops!")
+                    .setContentText("Network Failed! Check your Internet")
+                    .setCustomImage(R.drawable.ic_disconnected)
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            finish();
+                        }
+                    })
+                    .show();
+        }
     }
 
     @Override
     public void onClick(View view) {
+        if(ConnectivityManagerClass.getInstance().isNetworkAvailable(CollegeListActivity.this) == true) {
         switch (view.getId()){
             case R.id.btn_profile_continue:
      //           startActivity(new Intent(CollegeListActivity.this,GroupFeedActivity.class));
                 sumOfSelectedItem();
                 break;
+        }
+        }else {
+            SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(CollegeListActivity.this, SweetAlertDialog.CUSTOM_IMAGE_TYPE);
+            sweetAlertDialog.setTitleText("No Network!");
+            sweetAlertDialog.setContentText("Press 'OK' to Retry");
+            sweetAlertDialog.setCustomImage(R.drawable.ic_disconnected);
+            sweetAlertDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                @Override
+                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                    sweetAlertDialog.dismiss();
+
+                }
+            })
+                    .show();
         }
     }
 
@@ -96,12 +126,15 @@ public class CollegeListActivity extends AppCompatActivity implements View.OnCli
                 String groupID = tempCollegeList.get(i).getId();
                 if(groupID.length()>0)
                 { selectedGroupList.add(groupID);}
-
             }
         }
-        parseGson(selectedGroupList);
+        if(selectedGroupList.isEmpty() == false){
+            parseGson(selectedGroupList);
+        }else {
+            TastyToast.makeText(getApplicationContext(), " Select atleast 'One' ", TastyToast.LENGTH_LONG,
+                    TastyToast.INFO);
+        }
 
-     //   viewHolder.getCheckBox().setChecked( planet.isChecked() );
     }
 
     public void parseGson(List<String> group_id){
@@ -185,24 +218,13 @@ public class CollegeListActivity extends AppCompatActivity implements View.OnCli
         public View getView(int position, View convertView, ViewGroup parent) {
             // Planet to display
             Planet planet = this.getItem( position );
-
-            // The child views in each row.
             CheckBox checkBox ;
             TextView textView ;
-
-            // Create a new row view
             if ( convertView == null ) {
                 convertView = inflater.inflate(R.layout.simplerow, null);
-
-                // Find the child views.
                 textView = (TextView) convertView.findViewById( R.id.rowTextView );
                 checkBox = (CheckBox) convertView.findViewById( R.id.CheckBox01 );
-
-                // Optimization: Tag the row with it's child views, so we don't have to
-                // call findViewById() later when we reuse the row.
                 convertView.setTag( new PlanetViewHolder(textView,checkBox) );
-
-                // If CheckBox is toggled, update the planet it is tagged with.
                 checkBox.setOnClickListener( new View.OnClickListener() {
                     public void onClick(View v) {
                         CheckBox cb = (CheckBox) v ;
@@ -211,25 +233,16 @@ public class CollegeListActivity extends AppCompatActivity implements View.OnCli
                     }
                 });
             }
-            // Reuse existing row view
             else {
-                // Because we use a ViewHolder, we avoid having to call findViewById().
                 PlanetViewHolder viewHolder = (PlanetViewHolder) convertView.getTag();
                 checkBox = viewHolder.getCheckBox() ;
                 textView = viewHolder.getTextView() ;
             }
-
-            // Tag the CheckBox with the Planet it is displaying, so that we can
-            // access the planet in onClick() when the CheckBox is toggled.
             checkBox.setTag( planet );
-
-            // Display planet data
             checkBox.setChecked( planet.isChecked() );
             textView.setText( planet.getName() );
-
             return convertView;
         }
-
     }
 
     public Object onRetainCustomNonConfigurationInstance () {
@@ -248,20 +261,22 @@ public class CollegeListActivity extends AppCompatActivity implements View.OnCli
 
                 if (response.isSuccessful() && response.code() == 200) {
                     if(response.body().getResponseCode() == 200){
-                        Toast.makeText(CollegeListActivity.this, "Success", Toast.LENGTH_LONG).show();
+                     //   Toast.makeText(CollegeListActivity.this, "Success", Toast.LENGTH_LONG).show();
+              //          TastyToast.makeText(getApplicationContext(), "Data Saved Successful !", TastyToast.LENGTH_LONG,
+                //                TastyToast.SUCCESS);
                         List<Result> collegeApiList = response.body().getResults();
                         parseCollegeList(collegeApiList);
                     }
                 } else {
                     Toast.makeText(CollegeListActivity.this, "Confusion", Toast.LENGTH_LONG).show();
                 }
-
             }
 
             @Override
             public void onFailure(Call<CollegeListModel> call, Throwable t) {
                 call.cancel();
-                Toast.makeText(CollegeListActivity.this, "Failed!", Toast.LENGTH_LONG).show();
+                TastyToast.makeText(getApplicationContext(), "Something went wrong!", TastyToast.LENGTH_LONG,
+                        TastyToast.CONFUSING);
             }
         });
 
@@ -330,45 +345,6 @@ public class CollegeListActivity extends AppCompatActivity implements View.OnCli
                 ProgressClass.getProgressInstance().stopProgress();
             }
         });
-//        apiInterface.setUserJoinedGroup(profileJson).enqueue(new Call
-
-/*
-apiInterface.setUserJoinedGroup(profileJson).enqueue(new Callback<AcademicJobModel>() {
-            @Override
-            public void onResponse(Call<AcademicJobModel> call, Response<AcademicJobModel> response) {
-                if(response.isSuccessful() && response.code() == 200) {
-                    AcademicJobModel academicJobModel = response.body();
-                    if (academicJobModel.getResponseCode() == 200) {
-                        ProgressClass.getProgressInstance().stopProgress();
-                        Toast.makeText(CollegeListActivity.this, "Login Success", Toast.LENGTH_LONG).show();
-                        new SweetAlertDialog(CollegeListActivity.this, SweetAlertDialog.SUCCESS_TYPE)
-                                .setTitleText("Good job!")
-                                .setContentText("Data save succesfully!")
-                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                    @Override
-                                    public void onClick(SweetAlertDialog sDialog) {
-                                        sDialog.dismissWithAnimation();
-                                        startActivity(new Intent(CollegeListActivity.this, CollegeListActivity.class));
-                                    }
-                                })
-                                .show();
-
-                    } else if(academicJobModel.getResponseCode() == 404)  {
-                        Toast.makeText(CollegeListActivity.this, "Login Declined", Toast.LENGTH_LONG).show();
-                    }
-                }
-                //   Toast.makeText(EditProfileActivity.this, "Confused", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onFailure(Call<AcademicJobModel> call, Throwable t) {
-                call.cancel();
-                Toast.makeText(CollegeListActivity.this, "Login Failed", Toast.LENGTH_LONG).show();
-            }
-        });
-*//*
-
-*/
     }
 
 

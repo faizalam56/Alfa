@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.sdsmdg.tastytoast.TastyToast;
 import com.senzec.alfa.R;
 import com.senzec.alfa.adapter.CustomAcademicAdapter;
 import com.senzec.alfa.adapter.CustomJobInfoAdapter;
@@ -26,6 +28,7 @@ import com.senzec.alfa.parse_api_adapter.ApiInterface;
 import com.senzec.alfa.to_json.academic.AcademicMenuItem;
 import com.senzec.alfa.to_json.academic.AcademicWithMenu;
 import com.senzec.alfa.to_json.academic.JobMenuItem;
+import com.senzec.alfa.utils.ConnectivityManagerClass;
 import com.senzec.alfa.utils.Consts;
 import com.senzec.alfa.utils.ProgressClass;
 import com.senzec.alfa.utils.SharedPrefClass;
@@ -91,13 +94,26 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 jobListView(countJob);
                 break;
             case R.id.btn_profile_continue:
-                startActivity(new Intent(EditProfileActivity.this, CollegeListActivity.class));
+        //        startActivity(new Intent(EditProfileActivity.this, CollegeListActivity.class));
+                if(ConnectivityManagerClass.getInstance().isNetworkAvailable(EditProfileActivity.this) == true) {
                 submitAcademicJobInfo();
-      //          Toast.makeText(EditProfileActivity.this, "Academic : "+countAcademic+", Job : "+countJob, Toast.LENGTH_LONG).show();
+                }else {
+                    SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(EditProfileActivity.this, SweetAlertDialog.CUSTOM_IMAGE_TYPE);
+                    sweetAlertDialog.setTitleText("No Network!");
+                    sweetAlertDialog.setContentText("Press 'OK' to Retry");
+                    sweetAlertDialog.setCustomImage(R.drawable.ic_disconnected);
+                    sweetAlertDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            sweetAlertDialog.dismiss();
+
+                        }
+                    })
+                            .show();
+                }
                 break;
         }
     }
-
 
     public void academicListView(int countAcademic){
         CustomAcademicAdapter academicAdapter = new CustomAcademicAdapter(EditProfileActivity.this, countAcademic);
@@ -156,12 +172,33 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             try {
                 parentViewAcademic = getViewByPosition(i, mAcademicList);
                 //   parentViewAcademic = (View) mAcademicList.getParent();
-                String strDegree = ((TextView) parentViewAcademic.findViewById(R.id.idDegreeET)).getText().toString().trim();
-                String strInstitute = ((TextView) parentViewAcademic.findViewById(R.id.idInstituteName)).getText().toString().trim();
-                String strAcademicJY = ((TextView) parentViewAcademic.findViewById(R.id.idJoinYearAcademicET)).getText().toString().trim();
-                String strAcademicFY = ((TextView) parentViewAcademic.findViewById(R.id.idFinalYearAcademicET)).getText().toString().trim();
+                TextView tvDegree = (TextView) parentViewAcademic.findViewById(R.id.idDegreeET);
+                TextView tvInstituteName = (TextView) parentViewAcademic.findViewById(R.id.idInstituteName);
+                TextView tvAcademicJoinYear = (TextView) parentViewAcademic.findViewById(R.id.idJoinYearAcademicET);
+                TextView tvAcademicFinalYear = (TextView) parentViewAcademic.findViewById(R.id.idFinalYearAcademicET);
 
-                academic_info.add(new AcademicMenuItem(strDegree, strInstitute, Integer.parseInt(strAcademicJY), Integer.parseInt(strAcademicFY)));
+
+                if(TextUtils.isEmpty(tvDegree.getText().toString().trim()) == false){
+                    String strDegree = (tvDegree).getText().toString().trim();
+
+                    if(TextUtils.isEmpty(tvInstituteName.getText().toString().trim()) == false){
+                        String strInstitute = (tvInstituteName).getText().toString().trim();
+
+                        if(TextUtils.isEmpty(tvAcademicJoinYear.getText().toString().trim()) == false){
+                            String strAcademicJY = (tvAcademicJoinYear).getText().toString().trim();
+
+                            if(TextUtils.isEmpty(tvAcademicFinalYear.getText().toString().trim()) == false){
+                                String strAcademicFY = (tvAcademicFinalYear).getText().toString().trim();
+
+                                academic_info.add(new AcademicMenuItem(strDegree, strInstitute, Integer.parseInt(strAcademicJY), Integer.parseInt(strAcademicFY)));
+
+                            }else { tvAcademicFinalYear.setError("Not Empty"); }
+
+                        }else { tvAcademicJoinYear.setError("Not Empty"); }
+
+                    }else { tvInstituteName.setError("Not Empty"); }
+                }else { tvDegree.setError("Not Empty"); }
+
             }catch (NumberFormatException nfe){
                 Log.e(TAG, "#Error : "+nfe);
             }
@@ -170,31 +207,54 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         for (int i = 0; i < countJob; i++) {
             try {
                 parentViewJob = getViewByPosition(i, mJobInfoList);
-                //  parentViewJob = (View) mJobInfoList.getParent();
-                String strDesignation = ((TextView) parentViewJob.findViewById(R.id.idDesignationET)).getText().toString().trim();
-                String strCompany = ((TextView) parentViewJob.findViewById(R.id.idCompanyName)).getText().toString().trim();
-                String strJobJY = ((TextView) parentViewJob.findViewById(R.id.idJoinYearJobET)).getText().toString().trim();
-                String strJobFY = ((TextView) parentViewJob.findViewById(R.id.idFinalYearJobET)).getText().toString().trim();
+                //  parentViewJob = (View) mJobInfoList.getParent();.
+                TextView tvDesignation = (TextView) parentViewJob.findViewById(R.id.idDesignationET);
+                TextView tvCompany = (TextView) parentViewJob.findViewById(R.id.idCompanyName);
+                TextView tvJobJoinYear = (TextView) parentViewJob.findViewById(R.id.idJoinYearJobET);
+                TextView tvJobFinalYear = (TextView) parentViewJob.findViewById(R.id.idFinalYearJobET);
+                if(TextUtils.isEmpty(tvDesignation.getText().toString().trim()) == false){
+                    String strDesignation = (tvDesignation).getText().toString().trim();
+                    if(TextUtils.isEmpty(tvCompany.getText().toString().trim()) == false){
+                        String strCompany = (tvCompany).getText().toString().trim();
 
-                job_info.add(new JobMenuItem(strDesignation, Integer.parseInt(strJobJY), strCompany, Integer.parseInt(strJobFY)));
+                        if(TextUtils.isEmpty(tvJobJoinYear.getText().toString().trim()) == false){
+                            String strJobJY = (tvJobJoinYear).getText().toString().trim();
+
+                            if(TextUtils.isEmpty(tvJobFinalYear.getText().toString().trim()) == false){
+                                String strJobFY = (tvJobFinalYear).getText().toString().trim();
+
+                                job_info.add(new JobMenuItem(strDesignation, Integer.parseInt(strJobJY), strCompany, Integer.parseInt(strJobFY)));
+
+                            }else { tvJobFinalYear.setError("Not Empty"); }
+                        }else { tvJobJoinYear.setError("Not Empty"); }
+                    }else { tvCompany.setError("Not Empty"); }
+                }else {  tvDesignation.setError("Not Empty"); }
+
             }catch (NumberFormatException nfe){
                 Log.e(TAG, "#Error : "+nfe);
             }
 
         }
 
-        //    convertToJSON( strDegree, strInstitute, strAcademicJY, strAcademicFY, strDesignation, strCompany, strJobJY, strJobFY);
-     //   Toast.makeText(EditProfileActivity.this, "output : "+strDegree+strInstitute+strAcademicJY+strAcademicFY+"="+strDesignation+strCompany+strJobJY+strJobFY, Toast.LENGTH_LONG).show();
-        String loggedUser = new SharedPrefClass(EditProfileActivity.this).getLoginInfo();
-        String current_company_name = mCurrentCompany.getText().toString().trim();
-        AcademicWithMenu profileMenu =
-                new AcademicWithMenu(loggedUser, current_company_name, academic_info, job_info);
-// current_company_name
-        Gson gson = new Gson();
-        String profileJson = gson.toJson(profileMenu);
-        System.out.print(profileJson);
+     //   academic_info, job_info
 
-        sendJsonRequest(profileJson);
+        String loggedUser = new SharedPrefClass(EditProfileActivity.this).getLoginInfo();
+        if(TextUtils.isEmpty(mCurrentCompany.getText().toString().trim()) == false) {
+            String current_company_name = mCurrentCompany.getText().toString().trim();
+
+        if(academic_info.isEmpty() == false && job_info.isEmpty() == false && current_company_name.isEmpty() == false) {
+
+            AcademicWithMenu profileMenu =
+                    new AcademicWithMenu(loggedUser, current_company_name, academic_info, job_info);
+
+            Gson gson = new Gson();
+            String profileJson = gson.toJson(profileMenu);
+            System.out.print(profileJson);
+            sendJsonRequest(profileJson);
+        }
+        }else {
+            mCurrentCompany.setError("Not Empty");
+        }
     }
 
     public View getViewByPosition(int pos, ListView listView) {
@@ -222,7 +282,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                     AcademicJobModel academicJobModel = response.body();
                     if (academicJobModel.getResponseCode() == 200) {
                         ProgressClass.getProgressInstance().stopProgress();
-                        Toast.makeText(EditProfileActivity.this, "Login Success", Toast.LENGTH_LONG).show();
+                        /*Toast.makeText(EditProfileActivity.this, "Login Success", Toast.LENGTH_LONG).show();
                         new SweetAlertDialog(EditProfileActivity.this, SweetAlertDialog.SUCCESS_TYPE)
                                 .setTitleText("Good job!")
                                 .setContentText("Data save succesfully!")
@@ -233,7 +293,10 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                                         startActivity(new Intent(EditProfileActivity.this, CollegeListActivity.class));
                                     }
                                 })
-                                .show();
+                                .show();*/
+                        TastyToast.makeText(getApplicationContext(), "Data Saved Successful !", TastyToast.LENGTH_LONG,
+                                TastyToast.SUCCESS);
+                        startActivity(new Intent(EditProfileActivity.this, CollegeListActivity.class));
 
                     } else if(academicJobModel.getResponseCode() == 404)  {
                         Toast.makeText(EditProfileActivity.this, "Login Declined", Toast.LENGTH_LONG).show();

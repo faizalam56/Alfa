@@ -1,12 +1,10 @@
 package com.senzec.alfa.activity;
 
-import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -29,27 +27,18 @@ import com.senzec.alfa.font.FontChangeCrawler;
 import com.senzec.alfa.model.myprofile.MyProfileModel;
 import com.senzec.alfa.parse_api_adapter.ApiClient;
 import com.senzec.alfa.parse_api_adapter.ApiInterface;
-import com.senzec.alfa.utils.Common;
+import com.senzec.alfa.preference.AppPrefs;
 import com.senzec.alfa.utils.Consts;
-import com.senzec.alfa.utils.ImagesCache;
+import com.senzec.alfa.utils.cache.DownloadImageTask;
+import com.senzec.alfa.utils.cache.ImagesCache;
 import com.senzec.alfa.utils.ProgressClass;
 import com.senzec.alfa.utils.SharedPrefClass;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import okhttp3.MediaType;
@@ -62,26 +51,21 @@ import retrofit2.Response;
 public class MyProfileActivity extends AppCompatActivity implements View.OnClickListener, PopupMenu.OnMenuItemClickListener{
 
     private static final String TAG = "MyProfileActivity";
+    AppPrefs prefs;
     LinearLayout mUploadCv;
     ImageView mBackIV, mEditProfileIV, mProfileIV;
     Button btn_create_job, btn_enquiries, mCompanyBTN, mInviteMemberBTN, mChatHistoryBtn;
-
     //ATTACHMENT
     private static final int REQUEST_CODE_ATTACHMENT = 721;
     // Camera activity request codes
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
-    private static final int CAMERA_CAPTURE_VIDEO_REQUEST_CODE = 200;
-
     public static final int MEDIA_TYPE_IMAGE = 1;
-    public static final int MEDIA_TYPE_VIDEO = 2;
     private static final int READ_REQUEST_CODE = 42;
     private Uri mCropImagedUri;
     private final int CROP_IMAGE = 101;
-
     private Uri fileUri; // file url to store image/video
     File filePhoto;
     ApiInterface apiInterface;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +75,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
         initView();
         handleClick();
+        prefs = new AppPrefs(this);
         // Checking camera availability
         if (!isDeviceSupportCamera()) {
             Toast.makeText(getApplicationContext(),
@@ -105,6 +90,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         super.onStart();
         FontChangeCrawler fontChanger = new FontChangeCrawler(getAssets(), "opensansregular.ttf","opensansregular.ttf");
         fontChanger.replaceFonts((ViewGroup) findViewById(android.R.id.content));
+        loadProfileImage();
     }
 
     public void initView(){
@@ -184,6 +170,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
      * Launching camera app to capture image
      */
     private void captureImage() {
+
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
@@ -261,8 +248,6 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        // save file url in bundle as it will be null on screen orientation
-        // changes
         outState.putParcelable("file_uri", fileUri);
     }
     @Override
@@ -272,7 +257,6 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         // get the file url
         fileUri = savedInstanceState.getParcelable("file_uri");
     }
-
 
     private void launchUploadActivity(boolean isImage){
         funcAttachment(fileUri);
@@ -302,7 +286,6 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 } else {
                 }
             }
-
                 //SECOND
                 // if the result is capturing Image
                 if (requestCode == CAMERA_CAPTURE_IMAGE_REQUEST_CODE) {
@@ -404,8 +387,10 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                         Toast.makeText(MyProfileActivity.this, "Success", Toast.LENGTH_LONG).show();
 
                         if(!new SharedPrefClass(MyProfileActivity.this).getStorageTypeFile().equalsIgnoreCase("cv_file_type")) {
-                            String url = Consts.BASE_URL + response.body().getProfilePic();
-                            setProfileImage(url);
+                            String profileUrl = Consts.BASE_URL + response.body().getProfilePic();
+                            prefs.putString(Consts.PROFILE_URL, profileUrl);
+                        //    setProfileImage(profileUrl);
+                            loadProfileImage();
                         }
                     } else {
                         Toast.makeText(MyProfileActivity.this, "Confusion", Toast.LENGTH_LONG).show();
@@ -510,6 +495,32 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         return file;
     }
     // ------------------------------------------------------
+
+    private void loadProfileImage(){
+
+        String profileURL = prefs.getString(Consts.PROFILE_URL);
+        if(profileURL != null) {
+
+            //IMAGE CACHE START
+            ImagesCache cache = ImagesCache.getInstance();//Singleton instance handled in ImagesCache class.
+            cache.initializeCache();
+            Bitmap bm = cache.getImageFromWarehouse(profileURL);
+            if (bm != null) {
+                Glide.with(MyProfileActivity.this)
+                        .load(bm)
+                        .into(mProfileIV);
+            } else {
+                Glide.with(MyProfileActivity.this)
+                        .load(profileURL)
+                        .into(mProfileIV);
+
+                DownloadImageTask imgTask = new DownloadImageTask(cache, mProfileIV, 300, 300);//Since you are using it from `Activity` call second Constructor.
+                imgTask.execute(profileURL);
+            }
+
+        }
+    }
+
     @Override
     public void finish() {
         super.finish();

@@ -1,4 +1,4 @@
-package com.senzec.alfa.utils;
+package com.senzec.alfa.utils.cache;
 
 /**
  * Created by senzec on 11/10/17.

@@ -72,10 +72,16 @@
                         android:visibility="gone" />
                 </FrameLayout>
 
-                <ImageView
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:src="@drawable/google"/>
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/sign_in_button"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:src="@drawable/google" />
+
+                </FrameLayout>
             </LinearLayout>
             <LinearLayout
                 android:orientation="vertical"
@@ -94,11 +100,13 @@
                         android:id="@+id/et_login_email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
                         android:background="@color/colorEditBox"
                         android:hint="Email"
+                        android:inputType="textEmailAddress"
                         android:padding="10dp"
-                        android:layout_marginLeft="30dp"
                         android:singleLine="true"
+                        android:text="diwakar@senzecit.com"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
 
                     <ImageView
@@ -119,12 +127,13 @@
                         android:id="@+id/et_login_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/colorEditBox"
-                        android:singleLine="true"
-                        android:hint="Password"
-                        android:padding="10dp"
                         android:layout_marginLeft="30dp"
+                        android:background="@color/colorEditBox"
+                        android:hint="Password"
                         android:inputType="textPassword"
+                        android:padding="10dp"
+                        android:singleLine="true"
+                        android:text="12345678"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
 
                     <ImageView

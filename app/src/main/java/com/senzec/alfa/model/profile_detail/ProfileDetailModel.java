@@ -1,12 +1,8 @@
 package com.senzec.alfa.model.profile_detail;
 
-/**
- * Created by senzec on 11/10/17.
- */
 
-
- import com.google.gson.annotations.Expose;
- import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class ProfileDetailModel {
 
@@ -45,5 +41,3 @@ public class ProfileDetailModel {
     }
 
 }
-
-

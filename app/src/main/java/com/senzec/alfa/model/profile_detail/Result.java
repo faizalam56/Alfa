@@ -1,34 +1,41 @@
 package com.senzec.alfa.model.profile_detail;
 
+import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
-
-/**
- * Created by senzec on 11/10/17.
- */
 
 public class Result {
 
     @SerializedName("_id")
     @Expose
     private String id;
-    @SerializedName("type")
-    @Expose
-    private String type;
     @SerializedName("email_id")
     @Expose
     private String emailId;
-    @SerializedName("user_name")
-    @Expose
-    private String userName;
     @SerializedName("phone_number")
     @Expose
     private Integer phoneNumber;
+    @SerializedName("type")
+    @Expose
+    private String type;
+    @SerializedName("user_name")
+    @Expose
+    private String userName;
     @SerializedName("__v")
     @Expose
     private Integer v;
+    @SerializedName("cv")
+    @Expose
+    private String cv;
+    @SerializedName("profile_pic")
+    @Expose
+    private String profilePic;
+    @SerializedName("device_token")
+    @Expose
+    private Object deviceToken;
+    @SerializedName("current_company_name")
+    @Expose
+    private String currentCompanyName;
     @SerializedName("is_active")
     @Expose
     private String isActive;
@@ -59,28 +66,12 @@ public class Result {
         this.id = id;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getEmailId() {
         return emailId;
     }
 
     public void setEmailId(String emailId) {
         this.emailId = emailId;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public Integer getPhoneNumber() {
@@ -91,12 +82,60 @@ public class Result {
         this.phoneNumber = phoneNumber;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public Integer getV() {
         return v;
     }
 
     public void setV(Integer v) {
         this.v = v;
+    }
+
+    public String getCv() {
+        return cv;
+    }
+
+    public void setCv(String cv) {
+        this.cv = cv;
+    }
+
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
+    }
+
+    public Object getDeviceToken() {
+        return deviceToken;
+    }
+
+    public void setDeviceToken(Object deviceToken) {
+        this.deviceToken = deviceToken;
+    }
+
+    public String getCurrentCompanyName() {
+        return currentCompanyName;
+    }
+
+    public void setCurrentCompanyName(String currentCompanyName) {
+        this.currentCompanyName = currentCompanyName;
     }
 
     public String getIsActive() {

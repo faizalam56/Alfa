@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:weightSum="10">
 
+    <!-- Profile Image -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -41,110 +42,216 @@
         android:layout_height="0dp"
         android:layout_weight="5.8">
 
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
         <LinearLayout
             android:padding="10dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+            # Personal Info
+        <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+          android:orientation="vertical">
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
-                card_view:cardUseCompatPadding="true"
-                >
-
-                <Button
-                    android:id="@+id/btn_enquires"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:background="@color/White"
-                    android:gravity="left"
-                    android:padding="10dp"
-                    android:text="Chat History"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textSize="20sp" />
-
-                <ImageView
-                    android:layout_marginLeft="5dp"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_info"
-                    android:layout_gravity="left|center_vertical"/>
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="right|center_vertical"
-                    android:src="@drawable/ic_right_arrow"
-                    />
-
+                card_view:cardUseCompatPadding="true">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/str_personal_info"
+                android:layout_marginBottom="@dimen/vertical_margin_small"
+                android:layout_gravity="center_horizontal|center_vertical"
+                />
             </android.support.v7.widget.CardView>
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
-                card_view:cardUseCompatPadding="true"
-                >
-
-                <Button
-                    android:id="@+id/idCompanyBtn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:background="@color/White"
-                    android:gravity="left"
-                    android:padding="10dp"
-                    android:text="Companies"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textSize="20sp" />
-
-                <ImageView
-                    android:layout_marginLeft="5dp"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_company"
-                    android:layout_gravity="left|center_vertical"/>
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="right|center_vertical"
-                    android:src="@drawable/ic_right_arrow"
-                    />
-
-            </android.support.v7.widget.CardView>
-            <android.support.v7.widget.CardView
+                card_view:cardUseCompatPadding="true">
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
-                card_view:cardUseCompatPadding="true"
-                >
-
-                <Button
-                    android:id="@+id/idInviteMemberBtn"
+                android:orientation="vertical">
+                # Personal Info ROW-1
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:background="@color/White"
-                    android:gravity="left"
-                    android:padding="10dp"
-                    android:text="Invite Members"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textSize="20sp" />
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="@dimen/vertical_margin_small"
+                    android:layout_weight="2">
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="1">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Name"
+                        android:textColor="@color/colorYellow"
+                        />
 
-                <ImageView
-                    android:layout_marginLeft="5dp"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_invite_member"
-                    android:layout_gravity="left|center_vertical"/>
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="right|center_vertical"
-                    android:src="@drawable/ic_right_arrow"
-                    />
+                        <TextView
+                            android:id="@+id/idNameTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="John Smith" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="1">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Email"
+                            android:textColor="@color/colorYellow"
+                            />
 
+                        <TextView
+                            android:id="@+id/idEmailTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="diwakar@senzecit.com" />
+                    </LinearLayout>
+                    </LinearLayout>
+                # Personal Info ROW-2
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="@dimen/vertical_margin_small"
+                    android:layout_weight="2">
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Current Company"
+                            android:textColor="@color/colorYellow" />
+
+                        <TextView
+                            android:id="@+id/idCurrentCompanyTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Senzec IT" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Phone No."
+                            android:textColor="@color/colorYellow" />
+
+                        <TextView
+                            android:id="@+id/idPhoneTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="8860807707" />
+                    </LinearLayout>
+                </LinearLayout>
+                # Personal Info ROW-3
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_weight="2">
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="0.5">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="CV : "
+                            android:textColor="@color/colorYellow"
+                            />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/idCvTv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="abc.pdf" />
+                    </LinearLayout>
+                </LinearLayout>
+                </LinearLayout>
             </android.support.v7.widget.CardView>
         </LinearLayout>
+            # Academic Info
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/str_academic_info"
+
+                    android:layout_gravity="center_horizontal"
+                    />
+                <ListView
+                    android:id="@+id/idAcademic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    ></ListView>
+            </LinearLayout>
+            # Job  Info
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/str_job_info"
+                    android:layout_gravity="center_horizontal"
+                    />
+                <ListView
+                    android:id="@+id/idJobInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"></ListView>
+            </LinearLayout>
+        </LinearLayout>
+        </ScrollView>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/vertical_margin_small"
+            android:layout_gravity="bottom">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Start Chat"
+                android:textColor="@color/White"
+                android:background="@color/colorYellow"/>
+        </FrameLayout>
     </FrameLayout>
 </LinearLayout>

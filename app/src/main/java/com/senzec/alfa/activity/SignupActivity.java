@@ -10,15 +10,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.sdsmdg.tastytoast.TastyToast;
 import com.senzec.alfa.R;
 import com.senzec.alfa.adapter.SignupParameter;
 import com.senzec.alfa.font.FontChangeCrawler;
 import com.senzec.alfa.model.signup.SignupModel;
 import com.senzec.alfa.parse_api_adapter.ApiClient;
 import com.senzec.alfa.parse_api_adapter.ApiInterface;
+import com.senzec.alfa.utils.ConnectivityManagerClass;
 import com.senzec.alfa.utils.Consts;
 import com.senzec.alfa.utils.SharedPrefClass;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -62,7 +65,22 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                 startActivity(new Intent(SignupActivity.this, LoginActivity.class));
                 break;
             case R.id.btn_submit:
-                checkValidation();
+                if(ConnectivityManagerClass.getInstance().isNetworkAvailable(SignupActivity.this) == true)
+                {    checkValidation(); }
+                else {
+                    SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(SignupActivity.this, SweetAlertDialog.CUSTOM_IMAGE_TYPE);
+                    sweetAlertDialog.setTitleText("No Network!");
+                    sweetAlertDialog.setContentText("Press 'OK' to Retry");
+                    sweetAlertDialog.setCustomImage(R.drawable.ic_disconnected);
+                    sweetAlertDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sweetAlertDialog) {
+                            sweetAlertDialog.dismiss();
+
+                        }
+                    })
+                            .show();
+                }
                 break;
         }
     }
@@ -102,15 +120,20 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onResponse(Call<SignupModel> call, Response<SignupModel> response) {
 
-                if(response.isSuccessful() && response.code() == 200){
-                    Toast.makeText(SignupActivity.this, "Signup Success", Toast.LENGTH_LONG).show();
-                    //     new SharedPrefClass(view.getContext()).setLogininfo(response.body().getToken());
-                    new SharedPrefClass(SignupActivity.this).setLogininfo(response.body().getResult().getId());
-                    startActivity(new Intent(SignupActivity.this, EditProfileActivity.class));
-                }else if(response.isSuccessful() && response.code() == 204){
-                    Toast.makeText(SignupActivity.this, "Email Already Exist!", Toast.LENGTH_LONG).show();
-                }else {
-                    Toast.makeText(SignupActivity.this, "Signup Confused", Toast.LENGTH_LONG).show();
+                if(response.isSuccessful() && response.code() == 200) {
+                    if (response.body().getResponseCode() == 200) {
+
+                        TastyToast.makeText(getApplicationContext(), "Signup Successful !", TastyToast.LENGTH_LONG,
+                                TastyToast.SUCCESS);
+
+                        //     new SharedPrefClass(view.getContext()).setLogininfo(response.body().getToken());
+                        new SharedPrefClass(SignupActivity.this).setLogininfo(response.body().getResult().getId());
+                        startActivity(new Intent(SignupActivity.this, EditProfileActivity.class));
+                    } else if (response.isSuccessful() && response.code() == 204) {
+                        Toast.makeText(SignupActivity.this, "Email Already Exist!", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(SignupActivity.this, "Signup Confused", Toast.LENGTH_LONG).show();
+                    }
                 }
 
             }

@@ -20,15 +20,27 @@ public class Result {
     @SerializedName("password")
     @Expose
     private String password;
-    @SerializedName("user_name")
-    @Expose
-    private String userName;
     @SerializedName("phone_number")
     @Expose
     private Integer phoneNumber;
+    @SerializedName("type")
+    @Expose
+    private String type;
+    @SerializedName("user_name")
+    @Expose
+    private String userName;
     @SerializedName("__v")
     @Expose
     private Integer v;
+    @SerializedName("cv")
+    @Expose
+    private String cv;
+    @SerializedName("profile_pic")
+    @Expose
+    private String profilePic;
+    @SerializedName("device_token")
+    @Expose
+    private Object deviceToken;
     @SerializedName("created_at")
     @Expose
     private String createdAt;
@@ -47,6 +59,12 @@ public class Result {
     @SerializedName("otp_authenticate")
     @Expose
     private Boolean otpAuthenticate;
+    @SerializedName("job_info")
+    @Expose
+    private List<Object> jobInfo = null;
+    @SerializedName("academic_info")
+    @Expose
+    private List<Object> academicInfo = null;
 
     public String getId() {
         return id;
@@ -72,14 +90,6 @@ public class Result {
         this.password = password;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
     public Integer getPhoneNumber() {
         return phoneNumber;
     }
@@ -88,12 +98,52 @@ public class Result {
         this.phoneNumber = phoneNumber;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public Integer getV() {
         return v;
     }
 
     public void setV(Integer v) {
         this.v = v;
+    }
+
+    public String getCv() {
+        return cv;
+    }
+
+    public void setCv(String cv) {
+        this.cv = cv;
+    }
+
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
+    }
+
+    public Object getDeviceToken() {
+        return deviceToken;
+    }
+
+    public void setDeviceToken(Object deviceToken) {
+        this.deviceToken = deviceToken;
     }
 
     public String getCreatedAt() {
@@ -143,5 +193,22 @@ public class Result {
     public void setOtpAuthenticate(Boolean otpAuthenticate) {
         this.otpAuthenticate = otpAuthenticate;
     }
+
+    public List<Object> getJobInfo() {
+        return jobInfo;
+    }
+
+    public void setJobInfo(List<Object> jobInfo) {
+        this.jobInfo = jobInfo;
+    }
+
+    public List<Object> getAcademicInfo() {
+        return academicInfo;
+    }
+
+    public void setAcademicInfo(List<Object> academicInfo) {
+        this.academicInfo = academicInfo;
+    }
+
 
 }
